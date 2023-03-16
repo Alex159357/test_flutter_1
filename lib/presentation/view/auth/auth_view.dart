@@ -23,6 +23,7 @@ class AuthView extends StatelessWidget {
               "eComerce",
               style: Theme.of(context).textTheme.displayLarge,
             ),
+            _getErrorMessage,
             _usernameField,
             _passwordField,
             _getForgetButton,
@@ -32,6 +33,16 @@ class AuthView extends StatelessWidget {
       ),
     );
   }
+
+  Widget get _getErrorMessage =>
+      BlocBuilder<AuthBloc, AuthState>(builder: (BuildContext context, state) {
+        return state.authErrorMessage.isNotEmpty
+            ? Center(child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(state.authErrorMessage, style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.error),),
+            ))
+            : Container();
+      });
 
   Widget get _usernameField => BlocBuilder<AuthBloc, AuthState>(
         builder: (BuildContext context, state) {
