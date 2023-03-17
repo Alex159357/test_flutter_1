@@ -17,3 +17,5 @@ class OnUsernameChanged extends AuthEvent{
 
   OnUsernameChanged(this.username);
 }
+
+class LogOut extends AuthEvent{}

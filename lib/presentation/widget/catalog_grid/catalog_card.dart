@@ -31,11 +31,12 @@ class CatalogCard extends StatelessWidget {
                 child: ClipRRect(
                   child: CachedNetworkImage(
                     imageUrl: productModel.image,
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) =>
-                            SizedBox(
+                    placeholderFadeInDuration: const Duration(milliseconds: 500),
+                    progressIndicatorBuilder: (context, url, downloadProgress) =>
+                            Container(
                             width: 50,
                             height: 50,
+                            margin: const EdgeInsets.all(40),
                             child: CircularProgressIndicator(
                               value: downloadProgress.progress,
                             )),

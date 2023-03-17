@@ -16,9 +16,9 @@ class AuthRepositoryImpl extends PrefsHelper implements AuthRepository {
     Map<String, dynamic> req = {"username": username, "password": password};
       var response = await client.postData(data: req, apiValues: ApiValues.LOGIN);
       if(response is AuthModel) {
-        // setUsername(username);
-        // setPassword(password);
-        // setToken(response!.token);
+        setUsername(username);
+        setPassword(password);
+        setToken(response!.token);
         return response;
       }else if(response is String){
         onError?.call(response);

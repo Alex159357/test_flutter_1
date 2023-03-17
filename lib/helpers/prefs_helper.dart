@@ -11,12 +11,15 @@ class PrefsHelper{
     prefs.setString("username", username);
   }
   void setPassword(String password){
-    prefs.setString("username", password);
+    prefs.setString("password", password);
   }
 
   void setToken(String token){
     prefs.setString("token", token);
   }
 
+  void clearPrefs(){
+    prefs.clear();
+  }
 
 }

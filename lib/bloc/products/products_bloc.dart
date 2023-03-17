@@ -6,6 +6,7 @@ import 'package:test_flutter_1/bloc/products/product_screen_state.dart';
 import '../../models/product_model.dart';
 import '../../network/repository/product/product_repository.dart';
 import '../../network/repository/product/product_repository_impl.dart';
+import '../../presentation/sscreen/main/main_screen.dart';
 import 'products_event.dart';
 import 'products_state.dart';
 
@@ -20,16 +21,17 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   }
 
   void _init(InitProductEvent event, Emitter<ProductsState> emit) async {
-    emit(state.clone(productListScreenState: LoadingProductListScreenState()));
     try {
       List<ProductModel>? products = await _productRepository.fetchProducts();
       if (products != null) {
-        emit(state.clone(products: products, productListScreenState: const InitialProductListScreenState()),);
+        emit(state.clone(products: products),);
       } else {
         emit(state.clone(productListScreenState: ErrorLoadingProductListScreenState("No items in list")),);
       }
     }catch(e){
       emit(state.clone(productListScreenState:  ErrorLoadingProductListScreenState(e.toString())),);
+    }finally{
+      overScreensCubit.hideLoading();
     }
   }
 

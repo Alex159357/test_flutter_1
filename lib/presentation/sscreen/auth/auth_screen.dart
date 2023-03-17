@@ -32,32 +32,8 @@ class _AuthScreenState extends State<AuthScreen> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
       ),
-      body: Stack(
-        children: [
-          const SafeArea(child: AuthView()),
-          Positioned.fill(child: _getLoadingView)
-        ],
-      ),
+      body: const SafeArea(child: AuthView()),
     );
   }
-
-  Widget get _getLoadingView => BlocBuilder<AuthBloc, AuthState>(builder: (BuildContext context, state) {
-    if(state.authScreenState is LoadingAuthScreenState){
-      return Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
-              CircularProgressIndicator(),
-              Text("Loading items. Please wait.")
-            ],
-          ),
-        ),
-      );
-    }
-    return Container();
-  },);
 
 }

@@ -2,10 +2,14 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test_flutter_1/bloc/products/products_bloc.dart';
 import 'package:test_flutter_1/bloc/products/products_state.dart';
+import 'package:test_flutter_1/presentation/sscreen/auth/auth_screen.dart';
+import 'package:test_flutter_1/presentation/sscreen/main/main_screen.dart';
 import 'package:test_flutter_1/presentation/widget/search/search_bar.dart';
 
+import '../../../bloc/auth/auth_event.dart';
 import '../../../bloc/products/product_screen_state.dart';
 import '../../../bloc/products/products_event.dart';
 import '../../view/catalog/catalog_view.dart';
@@ -23,7 +27,7 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen> {
   final DraggableScrollableController dragController =
       DraggableScrollableController();
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   void initState() {
     productsBloc = BlocProvider.of<ProductsBloc>(context);
@@ -34,8 +38,10 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     productsBloc.add(InitProductEvent());
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: GestureDetector(
+          onTap:() => _scaffoldKey..currentState!.openDrawer(),
           child: SvgPicture.asset(
             "assets/icons/menu.svg",
               fit: BoxFit.scaleDown
@@ -44,7 +50,39 @@ class _ProductScreenState extends State<ProductScreen> {
         title: _showSearch(),
       ),
       body: Stack(
-        children: [const CatalogView(), Positioned.fill(child: _screenStateHandler)],
+        children: [const CatalogView()],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: Column(
+                children: [
+                  Text('eStore', style: Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 24, color: Theme.of(context).scaffoldBackgroundColor),),
+                  SvgPicture.asset("assets/icons/sacola.svg")
+                ],
+              ),
+            ),
+            ListTile(
+              title: const Text('My orders'),
+              onTap: () {
+                Fluttertoast.showToast(msg: "Will be available soon");
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Log out'),
+              onTap: () {
+                authBloc.add(LogOut());
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
       floatingActionButton: _getFab,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -61,45 +99,6 @@ class _ProductScreenState extends State<ProductScreen> {
     return Container();
   },);
 
-  Widget get _screenStateHandler => BlocBuilder<ProductsBloc, ProductsState>(
-        builder: (BuildContext context, state) {
-          if (state.productListScreenState is LoadingProductListScreenState) {
-            return Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    CircularProgressIndicator(),
-                    Text("Loading items. Please wait.")
-                  ],
-                ),
-              ),
-            );
-          } else if (state.productListScreenState
-              is ErrorLoadingProductListScreenState) {
-            return Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Center(
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.warning_amber,
-                      color: Theme.of(context).colorScheme.error,
-                      size: 80,
-                    ),
-                    Text((state.productListScreenState
-                            as ErrorLoadingProductListScreenState)
-                        .message)
-                  ],
-                ),
-              ),
-            );
-          }
-          return Container();
-        },
-      );
 
   Widget _showSearch() {
     return OpenContainer<bool>(
