@@ -92,7 +92,9 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget get _getFab => BlocBuilder<ProductsBloc, ProductsState>(builder: (BuildContext context, state) {
     if (state.productListScreenState is InitialProductListScreenState) {
       return FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Fluttertoast.showToast(msg: "Will be available soon");
+        },
         child: SvgPicture.asset("assets/icons/sacola.svg"),
       );
     }
